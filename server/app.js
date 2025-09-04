@@ -32,7 +32,7 @@ app.use(limiter);
 
 // CORS
 app.use(cors({
-  origin: ['https://appsellpoint.com','http://localhost:4173'],
+  origin: ['https://appsellpoint.com','http://localhost:5173'],
   credentials: true
 }));
 // app.use(cors({
