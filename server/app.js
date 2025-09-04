@@ -57,6 +57,7 @@ import blogRoutes from './routes/blog.js';
 import contactsRoutes from './routes/contacts.js';
 import purchasesRoutes from './routes/purchases.js';
 import dashboardRoutes from './routes/dashboard.js';
+import uploadRoutes from './routes/upload.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -64,7 +65,7 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/contacts', contactsRoutes);
 app.use('/api/purchases', purchasesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-
+app.use('/api/upload', uploadRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

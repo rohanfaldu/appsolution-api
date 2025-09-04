@@ -7,6 +7,64 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Test route
+router.get('/test', (req, res) => {
+  res.json({ message: '✅ Test Auth route is working!' });
+});
+
+
+// // GET /api/admin/purchases
+// router.get('/getAllPurchases', getAllPurchases);
+
+// Create new admin user
+router.post('/register-admin', [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+], async (req, res) => {
+  try {
+    // Validate input
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const { name, email, password } = req.body;
+
+    // Check if admin already exists
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) return res.status(400).json({ error: 'User with this email already exists' });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Create admin user
+    const adminUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: 'ADMIN', // Prisma enum
+        isActive: true
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true
+      }
+    });
+
+    res.status(201).json({
+      message: '✅ Admin user created successfully',
+      user: adminUser
+    });
+
+  } catch (error) {
+    console.error('Admin creation error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Login
 router.post('/login', [
   body('email').isEmail().normalizeEmail(),
