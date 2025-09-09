@@ -15,6 +15,12 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
 
 const app = express();
 
@@ -24,23 +30,27 @@ app.use(helmet({
 }));
 
 // Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 1000 // allow up to 1000 requests per IP per windowMs for development
+// });
+// app.use(limiter);
 
 // CORS
 app.use(cors({
   origin: ['https://appsellpoint.com','http://localhost:5173'],
   credentials: true
 }));
+
+
+
 // app.use(cors({
 //   origin: process.env.NODE_ENV === 'production' 
 //     ? ['https://yourdomain.com'] 
 //     : ['http://localhost:5173', 'http://localhost:3000','https://appsellpoint.com'],
 //   credentials: true
 // }));
+
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
