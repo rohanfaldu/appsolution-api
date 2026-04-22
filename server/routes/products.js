@@ -54,28 +54,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single product (public)
-router.get('/:id', async (req, res) => {
-  try {
-    console.log('Fetching product with ID:', req.params.id);
-    const product = await prisma.product.findUnique({
-      where: { id: req.params.id }
-    });
-    
-    if (!product) {
-      console.log('Product not found with ID:', req.params.id);
-      return res.status(404).json({ error: 'Product not found' });
-    }
-
-    console.log('Product found:', product.name);
-    res.json(product);
-  } catch (error) {
-    console.error('Get product error:', error);
-    console.error('Product ID that caused error:', req.params.id);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 // Get all products for admin
 router.get('/admin/all', adminAuth, async (req, res) => {
   try {
@@ -114,6 +92,28 @@ router.get('/admin/all', adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Get admin products error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get single product (public)
+router.get('/:id', async (req, res) => {
+  try {
+    console.log('Fetching product with ID:', req.params.id);
+    const product = await prisma.product.findUnique({
+      where: { id: req.params.id }
+    });
+    
+    if (!product) {
+      console.log('Product not found with ID:', req.params.id);
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    console.log('Product found:', product.name);
+    res.json(product);
+  } catch (error) {
+    console.error('Get product error:', error);
+    console.error('Product ID that caused error:', req.params.id);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
@@ -19,18 +20,25 @@ import AdminContacts from './pages/admin/AdminContacts';
 import AdminPurchases from './pages/admin/AdminPurchases';
 import PaymentSuccess from './pages/PaymentSuccess';
 import AllProducts from './pages/AllProducts';
+import CartPage from './pages/CartPage';
+import FavoritesPage from './pages/FavoritesPage';
+import OrdersPage from './pages/OrdersPage';
 import WhatsAppFloat from './components/WhatsAppFloat';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+        <div className="min-h-screen app-bg">
           <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/products" element={<AllProducts />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:id" element={<BlogDetailPage />} />
             <Route path="/about" element={<AboutPage />} />

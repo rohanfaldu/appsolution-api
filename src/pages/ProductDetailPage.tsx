@@ -3,20 +3,30 @@ import { useParams } from 'react-router-dom';
 import { Star, Download, Play, ShoppingCart, Check, Code, Smartphone, Globe } from 'lucide-react';
 import { productsAPI } from '../services/api';
 import PayPalCheckout from '../components/PayPalCheckout';
+import { getStaticProductById } from '../data/staticProducts';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [showCheckout, setShowCheckout] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true);
         const response = await productsAPI.getById(id);
-        setProduct(response.data);
+        if (response?.data) {
+          setProduct(response.data);
+        } else {
+          setProduct(getStaticProductById(id));
+        }
       } catch (error) {
         console.error('Error fetching product:', error);
+        setProduct(getStaticProductById(id));
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -25,10 +35,18 @@ const ProductDetailPage = () => {
     }
   }, [id]);
 
-  if (!product) {
+  if (loading) {
     return (
       <div className="pt-24 pb-20 flex items-center justify-center min-h-screen">
         <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="pt-24 pb-20 flex items-center justify-center min-h-screen">
+        <div className="text-white text-xl">Product not found.</div>
       </div>
     );
   }

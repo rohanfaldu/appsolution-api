@@ -1,104 +1,105 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import React, { useState } from 'react';
 import ContactForm from '../components/ContactForm';
 
+const faqs = [
+  { q: 'What is the typical deployment timeline?', a: '' },
+  { q: 'Do you offer custom enterprise integrations?', a: 'Yes, our platform is designed to be highly extensible. Our team provides specialized engineering support for legacy system bridges and custom API development for teams over 50 seats.' },
+  { q: 'Is there a dedicated support channel?', a: '' },
+  { q: 'How secure is the asset storage?', a: '' },
+];
+
 const ContactPage = () => {
+  const [openIndex, setOpenIndex] = useState(1);
+
   return (
-    <div className="pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Contact Us
-          </h1>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Get in touch with our team. We're here to help you find the perfect mobile app solution for your business.
-          </p>
-        </div>
+    <div className="pt-32 pb-24 max-w-[1440px] mx-auto px-6">
+      {/* Contact Split Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 mb-32">
+        {/* Left */}
+        <div className="lg:col-span-5 flex flex-col justify-center">
+          <div className="mb-8">
+            <span className="font-label text-sm text-primary font-bold bg-primary-container px-3 py-1 rounded-full mb-6 inline-block">
+              CONTACT US
+            </span>
+            <h1 className="text-5xl md:text-7xl font-headline font-extrabold tracking-tighter leading-none text-on-surface mb-6">
+              LET'S BUILD <br />THE <span className="bg-primary-fixed px-2">FUTURE.</span>
+            </h1>
+            <p className="text-lg text-on-surface-variant max-w-md leading-relaxed">
+              Have a complex architectural challenge? Our engineering team is standing by to help you forge your next breakthrough.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
-            <h2 className="text-2xl font-bold text-white mb-6">Get In Touch</h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="p-3 bg-blue-500/20 rounded-lg mr-4">
-                  <Mail className="h-6 w-6 text-blue-400" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Email</h3>
-                  <p className="text-gray-300">support@appsolutions.com</p>
-                  <p className="text-gray-300">sales@appsolutions.com</p>
-                </div>
+          <div className="space-y-4">
+            <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 flex items-center gap-6 group hover:border-primary-fixed transition-all duration-300">
+              <div className="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+                <span className="material-symbols-outlined">mail</span>
               </div>
-
-              <div className="flex items-start">
-                <div className="p-3 bg-green-500/20 rounded-lg mr-4">
-                  <Phone className="h-6 w-6 text-green-400" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Phone</h3>
-                  <p className="text-gray-300">+1 (555) 123-4567</p>
-                  <p className="text-gray-300">+1 (555) 987-6543</p>
-                </div>
+              <div>
+                <p className="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Direct Email</p>
+                <p className="text-xl font-headline font-bold">forge@appforge.dev</p>
               </div>
+            </div>
 
-              <div className="flex items-start">
-                <div className="p-3 bg-purple-500/20 rounded-lg mr-4">
-                  <MapPin className="h-6 w-6 text-purple-400" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Address</h3>
-                  <p className="text-gray-300">123 Tech Street</p>
-                  <p className="text-gray-300">San Francisco, CA 94105</p>
-                </div>
+            <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 flex items-center gap-6 group hover:border-primary-fixed transition-all duration-300">
+              <div className="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary-fixed group-hover:text-on-primary-fixed transition-colors">
+                <span className="material-symbols-outlined">forum</span>
               </div>
-
-              <div className="flex items-start">
-                <div className="p-3 bg-orange-500/20 rounded-lg mr-4">
-                  <Clock className="h-6 w-6 text-orange-400" />
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Business Hours</h3>
-                  <p className="text-gray-300">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                  <p className="text-gray-300">Saturday: 10:00 AM - 4:00 PM</p>
-                  <p className="text-gray-300">Sunday: Closed</p>
-                </div>
+              <div>
+                <p className="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Community Hub</p>
+                <p className="text-xl font-headline font-bold">discord.gg/appforge</p>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Contact Form */}
-          <div>
+        {/* Right: Form */}
+        <div className="lg:col-span-7">
+          <div className="bg-surface-container-lowest p-8 md:p-12 rounded-xl shadow-[0_20px_40px_rgba(45,47,44,0.05)] border border-outline-variant/10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-primary-fixed" />
             <ContactForm />
           </div>
         </div>
+      </div>
 
-        {/* FAQ Section */}
-        <div className="mt-16 bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-8 text-center">Frequently Asked Questions</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-3">How do I get started?</h3>
-              <p className="text-gray-300">Simply browse our products, select the app that fits your needs, and complete the purchase. You'll receive download instructions immediately.</p>
+      {/* FAQ */}
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-headline font-extrabold tracking-tight mb-4 text-on-surface">FREQUENTLY ASKED</h2>
+          <div className="w-16 h-1 bg-primary-fixed mx-auto" />
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <div key={i} className="group">
+              {openIndex === i && faq.a ? (
+                <div className="bg-surface-container-lowest p-6 rounded-xl border border-primary-fixed flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-2 h-2 rounded-full bg-primary-fixed shadow-[0_0_8px_#bfff5a]" />
+                      <h3 className="font-headline font-bold text-lg">{faq.q}</h3>
+                    </div>
+                    <button onClick={() => setOpenIndex(-1)}>
+                      <span className="material-symbols-outlined text-primary rotate-45">add</span>
+                    </button>
+                  </div>
+                  <div className="pl-6 border-l-2 border-primary-fixed/20">
+                    <p className="text-on-surface-variant leading-relaxed">{faq.a}</p>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="bg-surface-container-low p-6 rounded-xl flex items-center justify-between cursor-pointer hover:bg-surface-container-high transition-colors"
+                  onClick={() => setOpenIndex(i)}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-2 h-2 rounded-full bg-primary-fixed shadow-[0_0_8px_#bfff5a]" />
+                    <h3 className="font-headline font-bold text-lg">{faq.q}</h3>
+                  </div>
+                  <span className="material-symbols-outlined text-on-surface-variant group-hover:rotate-45 transition-transform">add</span>
+                </div>
+              )}
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Do you offer customization?</h3>
-              <p className="text-gray-300">Yes! We offer customization services for all our apps. Contact us to discuss your specific requirements and get a quote.</p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-3">What's included with purchase?</h3>
-              <p className="text-gray-300">You get complete source code, documentation, installation guide, and 6 months of free updates and support.</p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-3">Do you provide support?</h3>
-              <p className="text-gray-300">Absolutely! We provide email support for all our customers and offer premium support packages for extended assistance.</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

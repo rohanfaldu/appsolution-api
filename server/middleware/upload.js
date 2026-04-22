@@ -7,10 +7,14 @@ import { fileURLToPath } from 'url';
 // ES module equivalents for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const uploadRoot = path.resolve(__dirname, '..', '..', 'uploads');
+const productUploadDir = path.join(uploadRoot, 'products');
+const blogUploadDir = path.join(uploadRoot, 'blog');
+const downloadUploadDir = path.join(uploadRoot, 'downloads');
 
 // Ensure upload directories exist
-const uploadDirs = ['../../uploads/products', 'uploads/blog', 'uploads/downloads'];
-uploadDirs.forEach(dir => {
+const uploadDirs = [productUploadDir, blogUploadDir, downloadUploadDir];
+uploadDirs.forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -18,23 +22,23 @@ uploadDirs.forEach(dir => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadPath = 'uploads/';
-    
     if (file.fieldname === 'image' || file.fieldname === 'screenshots') {
       if (req.route.path.includes('/products')) {
-        uploadPath += 'products/';
+        cb(null, productUploadDir);
+        return;
       } else if (req.route.path.includes('/blog')) {
-        uploadPath += 'blog/';
+        cb(null, blogUploadDir);
+        return;
       } else {
-        uploadPath += 'products/';
+        cb(null, productUploadDir);
+        return;
       }
     } else if (file.fieldname === 'download') {
-      uploadPath += 'downloads/';
-    } else {
-      uploadPath += 'products/';
+      cb(null, downloadUploadDir);
+      return;
     }
-    
-    cb(null, uploadPath);
+
+    cb(null, productUploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;

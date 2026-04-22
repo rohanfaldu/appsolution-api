@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authAPI } from '../services/api';
+import { clearAuthStorage, getStoredUser, saveStoredUser } from '../utils/marketplaceStorage';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: any;
+  user: { name: string; email: string; role?: string } | null;
   login: (credentials: { email: string; password: string }) => Promise<boolean>;
   logout: () => void;
 }
@@ -11,8 +12,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    typeof window !== 'undefined' ? Boolean(window.localStorage.getItem('adminToken')) : false
+  );
+  const [user, setUser] = useState(() => getStoredUser());
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -21,11 +24,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       authAPI.getMe()
         .then(response => {
           setIsAuthenticated(true);
-          setUser(response.data.user);
+          const nextUser = response.data.user;
+          setUser(nextUser);
+          saveStoredUser(nextUser);
         })
         .catch(() => {
-          localStorage.removeItem('adminToken');
+          clearAuthStorage();
+          setIsAuthenticated(false);
+          setUser(null);
         });
+    } else {
+      setIsAuthenticated(false);
+      setUser(getStoredUser());
     }
   }, []);
 
@@ -37,6 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(true);
       setUser(user);
       localStorage.setItem('adminToken', token);
+      saveStoredUser(user);
       return true;
     } catch (error) {
       console.error('Login error:', error);
@@ -47,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('adminToken');
+    clearAuthStorage();
   };
 
   return (

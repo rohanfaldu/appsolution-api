@@ -4,7 +4,9 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, Smartphone } from 
 
 const Footer = () => {
   return (
-    <footer className="bg-black/40 backdrop-blur-lg border-t border-white/10">
+    <footer className="relative mt-20">
+      <div className="absolute inset-x-0 top-0 h-px opacity-70 divider-soft" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/10 via-black/25 to-black/35" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -19,18 +21,18 @@ const Footer = () => {
               Your premier destination for ready-made mobile app solutions. 
               Transform your business with our cutting-edge applications.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Facebook className="h-6 w-6" />
+            <div className="flex space-x-3">
+              <a href="#" className="surface halo rounded-2xl p-3 text-gray-200/90 hover:text-white transition hover:-translate-y-px">
+                <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <Twitter className="h-6 w-6" />
+              <a href="#" className="surface halo rounded-2xl p-3 text-gray-200/90 hover:text-white transition hover:-translate-y-px">
+                <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-pink-400 transition-colors">
-                <Instagram className="h-6 w-6" />
+              <a href="#" className="surface halo rounded-2xl p-3 text-gray-200/90 hover:text-white transition hover:-translate-y-px">
+                <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-600 transition-colors">
-                <Linkedin className="h-6 w-6" />
+              <a href="#" className="surface halo rounded-2xl p-3 text-gray-200/90 hover:text-white transition hover:-translate-y-px">
+                <Linkedin className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -39,16 +41,16 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4">Quick Links</h3>
             <div className="space-y-2">
-              <Link to="/products" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/products" className="block text-gray-300 hover:text-white transition-colors">
                 Products
               </Link>
-              <Link to="/blog" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/blog" className="block text-gray-300 hover:text-white transition-colors">
                 Blog
               </Link>
-              <Link to="/about" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/about" className="block text-gray-300 hover:text-white transition-colors">
                 About Us
               </Link>
-              <Link to="/contact" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/contact" className="block text-gray-300 hover:text-white transition-colors">
                 Contact
               </Link>
             </div>
@@ -58,19 +60,19 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4">Legal & Contact</h3>
             <div className="space-y-2 mb-4">
-              <Link to="/privacy" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/privacy" className="block text-gray-300 hover:text-white transition-colors">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/terms" className="block text-gray-300 hover:text-white transition-colors">
                 Terms & Conditions
               </Link>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center text-gray-400">
+              <div className="flex items-center text-gray-300">
                 <Mail className="h-4 w-4 mr-2" />
                 <span>support@appsolutions.com</span>
               </div>
-              <div className="flex items-center text-gray-400">
+              <div className="flex items-center text-gray-300">
                 <Phone className="h-4 w-4 mr-2" />
                 <span>+1 (555) 123-4567</span>
               </div>
@@ -79,8 +81,9 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 mt-8 pt-8 text-center">
-          <p className="text-gray-400">
+        <div className="mt-10 pt-8 text-center">
+          <div className="divider-soft opacity-70" />
+          <p className="text-gray-400 mt-8">
             © 2024 AppSolutions. All rights reserved.
           </p>
         </div>

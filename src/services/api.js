@@ -29,8 +29,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken');
-      window.location.href = '/admin/login';
+      const requestUrl = error.config?.url || '';
+      const isAuthHandshake = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/me');
+      const isAdminArea = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+
+      if (!isAuthHandshake && isAdminArea) {
+        localStorage.removeItem('adminToken');
+        window.location.href = '/admin/login';
+      }
     }
     return Promise.reject(error);
   }

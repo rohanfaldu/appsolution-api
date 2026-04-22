@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { Send, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { contactsAPI } from '../services/api';
 
 const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-    captcha: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', scope: 'Custom Plugin Development', message: '', captcha: '' });
   const [captchaValue, setCaptchaValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const generateCaptcha = () => {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
-    const captcha = `${num1} + ${num2}`;
-    setCaptchaValue(captcha);
-    return num1 + num2;
+    const n1 = Math.floor(Math.random() * 10) + 1;
+    const n2 = Math.floor(Math.random() * 10) + 1;
+    setCaptchaValue(`${n1} + ${n2}`);
+    return n1 + n2;
   };
 
   const [captchaAnswer, setCaptchaAnswer] = useState(() => generateCaptcha());
@@ -30,106 +24,107 @@ const ContactForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (parseInt(formData.captcha) !== captchaAnswer) {
       alert('Incorrect captcha. Please try again.');
       return;
     }
-
     setLoading(true);
-    
     try {
-      await contactsAPI.create(formData);
+      await contactsAPI.create({ name: formData.name, email: formData.email, message: formData.message });
       setSubmitted(true);
-      setFormData({ name: '', email: '', message: '', captcha: '' });
-      setCaptchaAnswer(generateCaptcha());
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
+    } catch {
       alert('Error submitting form. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   if (submitted) {
     return (
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 text-center">
-        <div className="text-green-400 text-6xl mb-4">✓</div>
-        <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
-        <p className="text-gray-300">Your message has been sent successfully. We'll get back to you soon.</p>
+      <div className="text-center py-16">
+        <div className="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mx-auto mb-6">
+          <span className="material-symbols-outlined text-on-primary-fixed text-3xl">check</span>
+        </div>
+        <h3 className="font-headline text-2xl font-bold mb-2">Transmission Received</h3>
+        <p className="text-on-surface-variant">We'll get back to you shortly.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label className="block text-white font-semibold mb-2">Name</label>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Full Name</label>
           <input
-            type="text"
             name="name"
+            type="text"
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
-            className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors"
-            placeholder="Your Name"
+            placeholder="John Architect"
+            className="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary-fixed focus:ring-0 transition-all px-0 py-3 text-lg font-medium"
           />
         </div>
-        <div>
-          <label className="block text-white font-semibold mb-2">Email</label>
+        <div className="space-y-2">
+          <label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Email Address</label>
           <input
-            type="email"
             name="email"
+            type="email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
-            className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors"
-            placeholder="your@email.com"
+            placeholder="john@studio.com"
+            className="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary-fixed focus:ring-0 transition-all px-0 py-3 text-lg font-medium"
           />
         </div>
       </div>
-      
-      <div className="mb-6">
-        <label className="block text-white font-semibold mb-2">Message</label>
+
+      <div className="space-y-2">
+        <label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Project Scope</label>
+        <select
+          name="scope"
+          value={formData.scope}
+          onChange={handleChange}
+          className="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary-fixed focus:ring-0 transition-all px-0 py-3 text-lg font-medium appearance-none"
+        >
+          <option>Custom Plugin Development</option>
+          <option>Enterprise Infrastructure</option>
+          <option>Design System Consulting</option>
+          <option>Other Inquiry</option>
+        </select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Message Details</label>
         <textarea
           name="message"
           value={formData.message}
-          onChange={handleInputChange}
+          onChange={handleChange}
           required
-          rows={5}
-          className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors resize-none"
-          placeholder="Tell us about your project..."
-        ></textarea>
+          rows={4}
+          placeholder="Describe your technical requirements..."
+          className="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary-fixed focus:ring-0 transition-all px-0 py-3 text-lg font-medium resize-none"
+        />
       </div>
 
-      <div className="mb-6">
-        <label className="block text-white font-semibold mb-2">Captcha Verification</label>
+      <div className="space-y-2">
+        <label className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Captcha: {captchaValue} = ?</label>
         <div className="flex items-center gap-4">
-          <div className="bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white font-mono">
-            {captchaValue} = ?
-          </div>
           <input
-            type="number"
             name="captcha"
+            type="number"
             value={formData.captcha}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
-            className="flex-1 px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors"
             placeholder="Answer"
+            className="flex-1 bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary-fixed focus:ring-0 transition-all px-0 py-3 text-lg font-medium"
           />
-          <button
-            type="button"
-            onClick={handleRefreshCaptcha}
-            className="p-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-white transition-colors"
-          >
+          <button type="button" onClick={handleRefreshCaptcha} className="text-on-surface-variant hover:text-on-surface transition-colors">
             <RefreshCw className="h-5 w-5" />
           </button>
         </div>
@@ -138,19 +133,10 @@ const ContactForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 transition-all duration-300"
+        className="w-full bg-primary-fixed hover:bg-primary-fixed-dim text-on-primary-fixed font-headline font-black py-5 rounded-lg text-lg flex items-center justify-center gap-3 transition-all transform hover:-translate-y-1 active:scale-95 shadow-lg shadow-primary-fixed/20 disabled:opacity-60"
       >
-        {loading ? (
-          <>
-            <RefreshCw className="animate-spin h-5 w-5 mr-2" />
-            Sending...
-          </>
-        ) : (
-          <>
-            <Send className="h-5 w-5 mr-2" />
-            Send Message
-          </>
-        )}
+        {loading ? 'TRANSMITTING...' : 'TRANSMIT INQUIRY'}
+        <span className="material-symbols-outlined">send</span>
       </button>
     </form>
   );
