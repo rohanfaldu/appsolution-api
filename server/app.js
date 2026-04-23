@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import os from 'os';
 import dotenv from 'dotenv';
 import prisma from './lib/prisma.js';
 import bcrypt from 'bcryptjs';
@@ -14,6 +15,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+
+const isPrivateNetworkHostname = (hostname) => (
+  hostname === 'localhost'
+  || hostname === '127.0.0.1'
+  || hostname === '::1'
+  || /^10\./.test(hostname)
+  || /^192\.168\./.test(hostname)
+  || /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
+);
+
+const getNetworkAddresses = () => {
+  const interfaces = os.networkInterfaces();
+  const addresses = new Set();
+
+  Object.values(interfaces).forEach((networkInterface) => {
+    networkInterface?.forEach((details) => {
+      if (details.family === 'IPv4' && !details.internal) {
+        addresses.add(details.address);
+      }
+    });
+  });
+
+  return Array.from(addresses);
+};
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
@@ -38,7 +63,24 @@ app.use(helmet({
 
 // CORS
 app.use(cors({
-  origin: ['https://appsellpoint.com','http://localhost:5173'],
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+      callback(null, origin === 'https://appsellpoint.com');
+      return;
+    }
+
+    try {
+      const { hostname } = new URL(origin);
+      callback(null, isPrivateNetworkHostname(hostname));
+    } catch {
+      callback(null, false);
+    }
+  },
   credentials: true
 }));
 
@@ -109,6 +151,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
 
 // Database connection and server start
 const startServer = async () => {
@@ -139,8 +182,14 @@ const startServer = async () => {
       console.log(`Admin user already exists: ${adminEmail}`);
     }
     
-    app.listen(PORT, () => {
+    app.listen(PORT, HOST, () => {
+      const networkAddresses = getNetworkAddresses();
+
       console.log(`Server running on port ${PORT}`);
+      console.log(`Local: http://localhost:${PORT}`);
+      networkAddresses.forEach((address) => {
+        console.log(`Network: http://${address}:${PORT}`);
+      });
       console.log(`Environment: ${process.env.NODE_ENV}`);
     });
   } catch (error) {
