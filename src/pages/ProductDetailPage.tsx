@@ -95,15 +95,15 @@ const ProductDetailPage = () => {
               ))}
             </div>
             
-            <div className="flex items-center justify-between mb-8">
-              <div className="text-4xl font-bold text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 p-3 sm:p-0 bg-white/5 sm:bg-transparent rounded-xl sm:rounded-none border border-white/10 sm:border-0">
+              <div className="text-2xl sm:text-4xl font-bold text-white">
                 ${product.price}
               </div>
               <button
                 onClick={() => setShowCheckout(true)}
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-semibold transition-all duration-300 flex items-center"
+                className="w-full sm:w-auto px-5 sm:px-8 py-2.5 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg text-sm sm:text-base font-semibold transition-all duration-300 flex items-center justify-center"
               >
-                <ShoppingCart className="h-5 w-5 mr-2" />
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Buy Now
               </button>
             </div>
