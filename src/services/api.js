@@ -113,7 +113,7 @@ export const blogAPI = {
 
 // Contacts API
 export const contactsAPI = {
-  create: (data) => api.post('/contacts', data),
+  create: (data) => publicApi.post('/contacts', data),
   getAll: (params) => api.get('/contacts', { params }),
   getById: (id) => api.get(`/contacts/${id}`),
   updateStatus: (id, status) => api.patch(`/contacts/${id}/status`, { status }),

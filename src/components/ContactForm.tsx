@@ -30,7 +30,13 @@ const ContactForm = () => {
     }
     setLoading(true);
     try {
-      await contactsAPI.create({ name: formData.name, email: formData.email, message: formData.message });
+      await contactsAPI.create({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.scope,
+        message: formData.message,
+        captcha: formData.captcha,
+      });
       setSubmitted(true);
     } catch {
       alert('Error submitting form. Please try again.');
