@@ -1,9 +1,44 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const getApiBaseUrl = () => {
+  const configuredUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL;
+
+  if (configuredUrl) {
+    try {
+      const apiUrl = new URL(configuredUrl);
+      const pageHostname = window.location.hostname;
+      const isLocalApiHost = apiUrl.hostname === 'localhost' || apiUrl.hostname === '127.0.0.1';
+      const isLocalPageHost = pageHostname === 'localhost' || pageHostname === '127.0.0.1';
+
+      if (import.meta.env.DEV && isLocalApiHost && !isLocalPageHost) {
+        apiUrl.hostname = pageHostname;
+        return apiUrl.toString().replace(/\/$/, '');
+      }
+    } catch {
+      return configuredUrl;
+    }
+
+    return configuredUrl;
+  }
+
+  if (import.meta.env.DEV) {
+    return `${window.location.protocol}//${window.location.hostname}:3001/api`;
+  }
+
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance
 const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+const publicApi = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -83,6 +118,12 @@ export const contactsAPI = {
   getById: (id) => api.get(`/contacts/${id}`),
   updateStatus: (id, status) => api.patch(`/contacts/${id}/status`, { status }),
   delete: (id) => api.delete(`/contacts/${id}`),
+};
+
+// Newsletter API
+export const newsletterAPI = {
+  subscribe: (data) => publicApi.post('/newsletter', data),
+  getAll: (params) => api.get('/newsletter', { params }),
 };
 
 // Purchases API
