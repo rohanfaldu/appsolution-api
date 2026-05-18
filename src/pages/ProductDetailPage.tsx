@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 import { Star, Download, Play, ShoppingCart, Check, Code, Smartphone, Globe } from 'lucide-react';
 import { productsAPI } from '../services/api';
 import PayPalCheckout from '../components/PayPalCheckout';
-import { getStaticProductById } from '../data/staticProducts';
+import { STATIC_PRODUCTS } from '../data/staticProducts';
+
+const toSlug = (name: string) =>
+  name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 
 const ProductDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -16,24 +19,33 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await productsAPI.getById(id);
-        if (response?.data) {
-          setProduct(response.data);
-        } else {
-          setProduct(getStaticProductById(id));
+        const allResponse = await productsAPI.getAll({ limit: 500 });
+        const allProducts = allResponse?.data?.products || allResponse?.data || [];
+        const found = allProducts.find((p: { name: string }) => toSlug(p.name) === slug);
+        if (!found) {
+          const staticFallback = STATIC_PRODUCTS.find((p) => toSlug(p.name) === slug) || null;
+          setProduct(staticFallback);
+          return;
+        }
+        try {
+          const response = await productsAPI.getById(found.id);
+          setProduct(response?.data ?? found);
+        } catch {
+          setProduct(found);
         }
       } catch (error) {
         console.error('Error fetching product:', error);
-        setProduct(getStaticProductById(id));
+        const staticFallback = STATIC_PRODUCTS.find((p) => toSlug(p.name) === slug) || null;
+        setProduct(staticFallback);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
+    if (slug) {
       fetchProduct();
     }
-  }, [id]);
+  }, [slug]);
 
   if (loading) {
     return (

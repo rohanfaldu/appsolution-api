@@ -23,6 +23,9 @@ export interface TemplateCardProps {
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80';
 
+const toSlug = (name: string) =>
+  name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
 const formatProductPrice = (price: number | string | null | undefined) => {
   const amount = Number(price || 0);
   return amount <= 0 ? 'Free' : `$${amount.toFixed(0)}`;
@@ -30,7 +33,6 @@ const formatProductPrice = (price: number | string | null | undefined) => {
 
 const TemplateCard: React.FC<TemplateCardProps> = React.memo(
   ({
-    id,
     title,
     description,
     image,
@@ -39,7 +41,7 @@ const TemplateCard: React.FC<TemplateCardProps> = React.memo(
     rating = 4.8,
     sales = 120,
     technologies = [],
-    href = `/product/${id}`,
+    href = `/product/${toSlug(title)}`,
     rankLabel,
     favorite = false,
     favoriteLabel,
