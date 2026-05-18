@@ -120,6 +120,109 @@ router.post('/login', [
   }
 });
 
+// Customer signup
+router.post('/signup', [
+  body('name').notEmpty().trim().withMessage('Name is required'),
+  body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
+  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+    const { name, email, password } = req.body;
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return res.status(400).json({ error: 'An account with this email already exists.' });
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: { name, email, password: hashedPassword, role: 'USER', isActive: true }
+    });
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    res.status(201).json({
+      token,
+      user: { id: user.id, email: user.email, name: user.name, role: user.role }
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Google OAuth login / signup
+router.post('/google', async (req, res) => {
+  try {
+    const { token: accessToken } = req.body;
+    if (!accessToken) return res.status(400).json({ error: 'Access token is required.' });
+
+    const googleRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    if (!googleRes.ok) return res.status(401).json({ error: 'Invalid Google token.' });
+
+    const { email, name, picture, sub: googleId } = await googleRes.json();
+    if (!email) return res.status(400).json({ error: 'Could not retrieve email from Google.' });
+
+    let user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: name || email.split('@')[0],
+          email,
+          password: await bcrypt.hash(googleId + process.env.JWT_SECRET, 12),
+          role: 'USER',
+          isActive: true
+        }
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    res.json({
+      token,
+      user: { id: user.id, email: user.email, name: user.name, role: user.role, picture: picture || null }
+    });
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update current user profile
+router.put('/me', auth, [
+  body('name').notEmpty().trim().withMessage('Name is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+    const { name, password } = req.body;
+    const updateData = { name };
+    if (password) updateData.password = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data: updateData
+    });
+
+    res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Get current user
 router.get('/me', auth, async (req, res) => {
   try {

@@ -1,7 +1,16 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 
 const WhatsAppFloat = () => {
+  const location = useLocation();
+  const isAuthPage =
+    location.pathname === '/login' ||
+    location.pathname === '/signup' ||
+    location.pathname === '/register';
+
+  if (isAuthPage) return null;
+
   const handleWhatsAppClick = () => {
     const phoneNumber = '+1234567890'; // Replace with your WhatsApp number
     const message = 'Hi! I\'m interested in your mobile app solutions.';

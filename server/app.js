@@ -115,6 +115,7 @@ import newsletterRoutes from './routes/newsletter.js';
 import purchasesRoutes from './routes/purchases.js';
 import dashboardRoutes from './routes/dashboard.js';
 import uploadRoutes from './routes/upload.js';
+import shopRoutes from './routes/shop.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -124,6 +125,7 @@ app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/purchases', purchasesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/shop', shopRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
