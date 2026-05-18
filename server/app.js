@@ -49,6 +49,14 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const app = express();
 
+// HTTPS redirect in production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
 // Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
@@ -116,6 +124,7 @@ import purchasesRoutes from './routes/purchases.js';
 import dashboardRoutes from './routes/dashboard.js';
 import uploadRoutes from './routes/upload.js';
 import shopRoutes from './routes/shop.js';
+import sitemapRoutes from './routes/sitemap.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -126,6 +135,7 @@ app.use('/api/purchases', purchasesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/shop', shopRoutes);
+app.use('/', sitemapRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
