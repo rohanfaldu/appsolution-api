@@ -216,6 +216,7 @@ const ProductModal = ({ product, onClose, onSave }) => {
     category: product?.category || 'ecommerce',
     technologies: product?.technologies?.join(', ') || '',
     image: product?.image || '',
+    testAppLink: product?.testAppLink || '',
     status: product?.status || 'active'
   });
 
@@ -336,6 +337,18 @@ const ProductModal = ({ product, onClose, onSave }) => {
               name="image"
               value={formData.image}
               onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label className="block text-white font-medium mb-2">Test App Link</label>
+            <input
+              type="url"
+              name="testAppLink"
+              value={formData.testAppLink}
+              onChange={handleInputChange}
+              placeholder="http://192.168.1.44:3001/"
               className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 transition-colors"
             />
           </div>

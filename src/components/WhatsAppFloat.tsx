@@ -10,17 +10,51 @@ const WhatsAppFloat = () => {
 
   if (isAuthPage) return null;
 
-  const handleWhatsAppClick = () => {
-    const pageTitle =
+  const handleWhatsAppClick = async () => {
+    // Read current page's dynamic OG meta tags
+    const ogTitle =
       document.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
-      document.title;
-    const pageImage =
+      document.title ||
+      'Explore Flutter Ready-Made App Solutions & Templates';
+
+    const ogDescription =
+      document.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+      'Get high-quality, customizable on-demand app source codes for Android and iOS — ideal for startups and developers.';
+
+    const rawImage =
       document.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+
     const pageUrl = window.location.href;
 
-    const message = `${pageTitle}\n${pageImage}\n${pageUrl}`;
-    const whatsappUrl = `https://wa.me/9316147661?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    const message = `${ogTitle} 🚀\n\n${ogDescription}\n\n🔗 Visit:\n${pageUrl}`;
+
+    // Resolve relative og:image URLs to absolute before fetching
+    const imageUrl = rawImage
+      ? rawImage.startsWith('http')
+        ? rawImage
+        : `${window.location.origin}${rawImage.startsWith('/') ? '' : '/'}${rawImage}`
+      : '';
+
+    // On mobile: try Web Share API with image file
+    if (imageUrl && navigator.share) {
+      try {
+        const response = await fetch(imageUrl);
+        if (!response.ok) throw new Error('image fetch failed');
+        const blob = await response.blob();
+        const ext = blob.type.split('/')[1] || 'jpg';
+        const file = new File([blob], `share.${ext}`, { type: blob.type });
+
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], text: message });
+          return;
+        }
+      } catch {
+        // fall through to wa.me link
+      }
+    }
+
+    // Fallback (desktop / unsupported browsers): open WhatsApp with encoded text
+    window.open(`https://wa.me/919316147661?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   return (

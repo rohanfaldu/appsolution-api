@@ -1,50 +1,40 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import { STATIC_PRODUCTS } from '../data/staticProducts';
 import { productsAPI } from '../services/api';
 import { toggleFavorite, useFavorites } from '../utils/marketplaceStorage';
 
 const FavoritesPage = () => {
-  const favorites = useFavorites();
-  const [allProducts, setAllProducts] = useState<any[]>(STATIC_PRODUCTS);
+  const favoriteIds = useFavorites();
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch live product details for each favorited product_id
   useEffect(() => {
+    if (favoriteIds.length === 0) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
     let active = true;
+    setLoading(true);
 
-    productsAPI
-      .getAll({ limit: 500 })
-      .then((response) => {
-        if (!active) return;
+    Promise.all(
+      favoriteIds.map((id) =>
+        productsAPI.getById(id).then((r) => r.data).catch(() => null)
+      )
+    ).then((results) => {
+      if (!active) return;
+      setProducts(results.filter(Boolean));
+      setLoading(false);
+    });
 
-        const apiProducts = response?.data?.products || [];
-        const mergedProducts = [...apiProducts, ...STATIC_PRODUCTS].reduce((products, product) => {
-          if (!product?.id || products.some((entry: any) => String(entry.id) === String(product.id))) {
-            return products;
-          }
-
-          return [...products, product];
-        }, [] as any[]);
-
-        setAllProducts(mergedProducts.length ? mergedProducts : STATIC_PRODUCTS);
-      })
-      .catch(() => {
-        if (active) setAllProducts(STATIC_PRODUCTS);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  const products = favorites
-    .map((id) => allProducts.find((entry) => String(entry.id) === String(id)))
-    .filter(Boolean);
+    return () => { active = false; };
+  }, [favoriteIds.join(',')]);
 
   const handleToggle = (id: string | number) => {
-    toggleFavorite(id).catch((error) => {
-      console.error('Favorite sync error:', error);
-    });
+    toggleFavorite(id).catch((err) => console.error('Favorite sync error:', err));
   };
 
   return (
@@ -55,7 +45,9 @@ const FavoritesPage = () => {
           <p className="mt-3 text-white/60">Keep track of apps you want to revisit later.</p>
         </div>
 
-        {products.length === 0 ? (
+        {loading ? (
+          <div className="text-white/60 text-center py-16">Loading...</div>
+        ) : products.length === 0 ? (
           <div className="market-card p-10 text-center">
             <Heart className="mx-auto h-10 w-10 text-cyan-300" />
             <h2 className="mt-4 text-2xl font-semibold text-white">No favorites yet</h2>
@@ -71,7 +63,11 @@ const FavoritesPage = () => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {products.map((product) => (
               <div key={product.id} className="market-card p-4">
-                <img src={product.image} alt={product.name} className="h-48 w-full rounded-xl object-cover" />
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-48 w-full rounded-xl object-cover"
+                />
                 <div className="mt-4 flex items-start justify-between gap-4">
                   <div>
                     <div className="text-white font-semibold">{product.name}</div>
@@ -82,6 +78,7 @@ const FavoritesPage = () => {
                     type="button"
                     onClick={() => handleToggle(product.id)}
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-300"
+                    aria-label="Remove from favorites"
                   >
                     <Heart className="h-4 w-4 fill-current" />
                   </button>

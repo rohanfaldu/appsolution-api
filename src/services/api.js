@@ -140,6 +140,14 @@ export const shopAPI = {
   getState: () => api.get('/shop'),
   saveCart: (items) => api.put('/shop/cart', { items }),
   saveFavorites: (items) => api.put('/shop/favorites', { items }),
+  addFavorite: (productId) => api.post(`/shop/favorites/${productId}`),
+  removeFavorite: (productId) => api.delete(`/shop/favorites/${productId}`),
+};
+
+// Orders API
+export const ordersAPI = {
+  create: (data) => api.post('/orders', data),
+  getAll: () => api.get('/orders'),
 };
 
 // Dashboard API

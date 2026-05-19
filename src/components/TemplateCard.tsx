@@ -55,7 +55,7 @@ const TemplateCard: React.FC<TemplateCardProps> = React.memo(
 
     return (
       <div
-        className="group bg-white rounded-2xl overflow-hidden border-2 border-slate-300 hover:border-blue-400 animate-in fade-in slide-in-from-bottom-4 flex flex-col"
+        className="group bg-white rounded-2xl border-2 border-slate-300 hover:border-blue-400 animate-in fade-in slide-in-from-bottom-4 flex flex-col"
         style={{
           animationDelay,
           boxShadow: '0 4px 20px rgba(37,99,235,0.08)',
