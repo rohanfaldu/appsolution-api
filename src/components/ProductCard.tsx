@@ -15,6 +15,7 @@ interface Product {
   sales: number;
   technologies: string[];
   category?: string;
+  slug?: string;
 }
 
 interface ProductCardProps {
@@ -36,7 +37,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       return;
     }
 
-    toggleFavorite(product.id).catch((error) => {
+    const productSlug =
+      product.slug ||
+      product.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+    toggleFavorite(product.id, productSlug).catch((error) => {
       console.error('Favorite sync error:', error);
     });
   };

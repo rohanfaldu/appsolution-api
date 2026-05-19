@@ -33,8 +33,16 @@ const FavoritesPage = () => {
     return () => { active = false; };
   }, [favoriteIds.join(',')]);
 
-  const handleToggle = (id: string | number) => {
-    toggleFavorite(id).catch((err) => console.error('Favorite sync error:', err));
+  const productSlug = (product: any) =>
+    product.slug ||
+    String(product.name || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+  const handleToggle = (product: any) => {
+    toggleFavorite(product.id, productSlug(product)).catch((err) => console.error('Favorite sync error:', err));
   };
 
   return (
@@ -76,7 +84,7 @@ const FavoritesPage = () => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleToggle(product.id)}
+                    onClick={() => handleToggle(product)}
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/30 bg-cyan-400/10 text-cyan-300"
                     aria-label="Remove from favorites"
                   >

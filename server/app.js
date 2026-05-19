@@ -126,6 +126,8 @@ import uploadRoutes from './routes/upload.js';
 import shopRoutes from './routes/shop.js';
 import ordersRoutes from './routes/orders.js';
 import sitemapRoutes from './routes/sitemap.js';
+import favoriteProductsRoutes from './routes/favoriteProducts.js';
+import favoritesUpdateStatusRoutes from './routes/favoritesUpdateStatus.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -137,6 +139,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/shop', shopRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/favorite-products', favoriteProductsRoutes);
+app.use('/api/favorites-update-status', favoritesUpdateStatusRoutes);
 app.use('/', sitemapRoutes);
 // Health check
 app.get('/api/health', (req, res) => {

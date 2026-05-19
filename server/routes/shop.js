@@ -52,8 +52,8 @@ router.put('/cart', auth, async (req, res) => {
   }
 });
 
-// PUT /api/shop/favorites — replace favorites list
-router.put('/favorites', auth, async (req, res) => {
+// PUT /api/favorites-update-status/ — replace favorites list
+router.put('/favorites-update-status', auth, async (req, res) => {
   try {
     const items = Array.isArray(req.body.items) ? req.body.items : [];
     const productIds = [...new Set(items.map((i) => String(typeof i === 'object' ? (i.productId ?? i.id) : i)).filter(Boolean))];
@@ -74,8 +74,8 @@ router.put('/favorites', auth, async (req, res) => {
   }
 });
 
-// POST /api/shop/favorites/:productId — add single favorite
-router.post('/favorites/:productId', auth, async (req, res) => {
+// POST /api/favorites-update-status/:productId — add single favorite
+router.post('/favorites-update-status/:productId', auth, async (req, res) => {
   try {
     const { productId } = req.params;
     await prisma.favorite.upsert({
@@ -90,8 +90,8 @@ router.post('/favorites/:productId', auth, async (req, res) => {
   }
 });
 
-// DELETE /api/shop/favorites/:productId — remove single favorite
-router.delete('/favorites/:productId', auth, async (req, res) => {
+// DELETE /api/favorites-update-status/:productId — remove single favorite
+router.delete('/favorites-update-status/:productId', auth, async (req, res) => {
   try {
     const { productId } = req.params;
     await prisma.favorite.deleteMany({

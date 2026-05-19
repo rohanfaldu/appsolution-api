@@ -140,8 +140,16 @@ export const shopAPI = {
   getState: () => api.get('/shop'),
   saveCart: (items) => api.put('/shop/cart', { items }),
   saveFavorites: (items) => api.put('/shop/favorites', { items }),
-  addFavorite: (productId) => api.post(`/shop/favorites/${productId}`),
-  removeFavorite: (productId) => api.delete(`/shop/favorites/${productId}`),
+  updateFavoriteStatus: (productId, status, slug) => {
+    return api.post('/favorites-update-status', {
+      slug,
+      isFavorite: status,
+      productId,
+      status,
+    });
+  },
+  addFavorite: (productId, slug) => shopAPI.updateFavoriteStatus(productId, true, slug), // Pass slug
+  removeFavorite: (productId, slug) => shopAPI.updateFavoriteStatus(productId, false, slug), // Pass slug
 };
 
 // Orders API

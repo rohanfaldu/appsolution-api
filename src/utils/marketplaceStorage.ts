@@ -109,14 +109,15 @@ export const hasFavorite = (id: string | number) =>
 export const getFavoriteCount = () => _favorites.length;
 
 /**
- * Toggle a favorite:
- * - Optimistically updates local state
- * - Calls POST /api/shop/favorites/:productId  (add)
- *   or  DELETE /api/shop/favorites/:productId  (remove)
- * - Rolls back on error
+ * Toggles favorite status for a product by its ID.
+ * Now requires both ID and SLUG to be passed to satisfy backend requirements.
  */
-export const toggleFavorite = async (id: string | number): Promise<string[]> => {
+export const toggleFavorite = async (id: string | number, slug?: string): Promise<string[]> => {
   const productId = normalizeId(id);
+  const productSlug = String(slug || '').trim();
+  if (!productSlug) {
+    throw new Error('Product slug is required to update favorite status.');
+  }
   const isRemoving = _favorites.includes(productId);
 
   // Optimistic update
@@ -127,9 +128,9 @@ export const toggleFavorite = async (id: string | number): Promise<string[]> => 
 
   try {
     if (isRemoving) {
-      await shopAPI.removeFavorite(productId);
+      await shopAPI.removeFavorite(productId, productSlug);
     } else {
-      await shopAPI.addFavorite(productId);
+      await shopAPI.addFavorite(productId, productSlug);
     }
     return _favorites;
   } catch (error) {
