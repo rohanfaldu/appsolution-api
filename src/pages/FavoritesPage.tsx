@@ -1,19 +1,50 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { STATIC_PRODUCTS } from '../data/staticProducts';
-import { getFavorites, toggleFavorite } from '../utils/marketplaceStorage';
+import { productsAPI } from '../services/api';
+import { toggleFavorite, useFavorites } from '../utils/marketplaceStorage';
 
 const FavoritesPage = () => {
-  const [favorites, setFavorites] = React.useState(getFavorites());
+  const favorites = useFavorites();
+  const [allProducts, setAllProducts] = useState<any[]>(STATIC_PRODUCTS);
+
+  useEffect(() => {
+    let active = true;
+
+    productsAPI
+      .getAll({ limit: 500 })
+      .then((response) => {
+        if (!active) return;
+
+        const apiProducts = response?.data?.products || [];
+        const mergedProducts = [...apiProducts, ...STATIC_PRODUCTS].reduce((products, product) => {
+          if (!product?.id || products.some((entry: any) => String(entry.id) === String(product.id))) {
+            return products;
+          }
+
+          return [...products, product];
+        }, [] as any[]);
+
+        setAllProducts(mergedProducts.length ? mergedProducts : STATIC_PRODUCTS);
+      })
+      .catch(() => {
+        if (active) setAllProducts(STATIC_PRODUCTS);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const products = favorites
-    .map((id) => STATIC_PRODUCTS.find((entry) => String(entry.id) === String(id)))
-    .filter(Boolean) as typeof STATIC_PRODUCTS;
+    .map((id) => allProducts.find((entry) => String(entry.id) === String(id)))
+    .filter(Boolean);
 
   const handleToggle = (id: string | number) => {
-    toggleFavorite(id);
-    setFavorites(getFavorites());
+    toggleFavorite(id).catch((error) => {
+      console.error('Favorite sync error:', error);
+    });
   };
 
   return (

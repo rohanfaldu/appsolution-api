@@ -135,6 +135,13 @@ export const purchasesAPI = {
   updateStatus: (id, status) => api.patch(`/purchases/${id}/status`, { paymentStatus: status }),
 };
 
+// Shop API
+export const shopAPI = {
+  getState: () => api.get('/shop'),
+  saveCart: (items) => api.put('/shop/cart', { items }),
+  saveFavorites: (items) => api.put('/shop/favorites', { items }),
+};
+
 // Dashboard API
 export const dashboardAPI = {
   getStats: () => api.get('/dashboard/stats'),

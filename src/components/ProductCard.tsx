@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { hasFavorite, toggleFavorite } from '../utils/marketplaceStorage';
+import { hasFavorite, toggleFavorite, useFavorites } from '../utils/marketplaceStorage';
 import TemplateCard from './TemplateCard';
 
 interface Product {
@@ -24,6 +24,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  useFavorites();
   const inFavorites = hasFavorite(product.id);
 
   const handleFavorite = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -35,7 +36,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       return;
     }
 
-    toggleFavorite(product.id);
+    toggleFavorite(product.id).catch((error) => {
+      console.error('Favorite sync error:', error);
+    });
   };
 
   return (

@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authAPI } from '../services/api';
-import { clearAuthStorage, getStoredUser, saveStoredUser } from '../utils/marketplaceStorage';
+import {
+  clearAuthStorage,
+  clearShopState,
+  getStoredUser,
+  saveStoredUser,
+  syncShopState,
+} from '../utils/marketplaceStorage';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -27,17 +33,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const nextUser = response.data.user;
           setUser(nextUser);
           saveStoredUser(nextUser);
+          syncShopState().catch((error) => {
+            console.error('Shop sync error:', error);
+          });
         })
         .catch(() => {
           clearAuthStorage();
+          clearShopState();
           setIsAuthenticated(false);
           setUser(null);
         });
     } else {
+      clearShopState();
       setIsAuthenticated(false);
       setUser(getStoredUser());
     }
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const refreshShopState = () => {
+      syncShopState().catch((error) => {
+        console.error('Shop sync error:', error);
+      });
+    };
+
+    refreshShopState();
+    window.addEventListener('focus', refreshShopState);
+    document.addEventListener('visibilitychange', refreshShopState);
+    const intervalId = window.setInterval(refreshShopState, 10000);
+
+    return () => {
+      window.removeEventListener('focus', refreshShopState);
+      document.removeEventListener('visibilitychange', refreshShopState);
+      window.clearInterval(intervalId);
+    };
+  }, [isAuthenticated]);
 
   const login = async (credentials: { email: string; password: string }) => {
     try {
@@ -48,6 +80,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(user);
       localStorage.setItem('adminToken', token);
       saveStoredUser(user);
+      syncShopState().catch((error) => {
+        console.error('Shop sync error:', error);
+      });
       return true;
     } catch (error) {
       console.error('Login error:', error);
@@ -59,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsAuthenticated(false);
     setUser(null);
     clearAuthStorage();
+    clearShopState();
   };
 
   return (

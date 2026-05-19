@@ -17,10 +17,10 @@ const Footer = () => {
     <footer className="relative mt-20">
       <div className="absolute inset-x-0 top-0 h-px opacity-70 divider-soft" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/10 via-black/25 to-black/35" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid min-w-0 grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info — DO NOT MODIFY */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="min-w-0 sm:col-span-2 lg:col-span-2">
             <Link to="/" className="flex items-center space-x-2 mb-4">
               <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
                 <Smartphone className="h-6 w-6 text-white" />
@@ -31,7 +31,7 @@ const Footer = () => {
               Your premier destination for ready-made mobile app solutions.
               Transform your business with our cutting-edge applications.
             </p>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-3">
               <a href="#" className="surface halo rounded-2xl p-3 text-gray-200/90 hover:text-white transition hover:-translate-y-px">
                 <Facebook className="h-5 w-5" />
               </a>
@@ -48,7 +48,7 @@ const Footer = () => {
           </div>
 
           {/* Navigation Links */}
-          <div>
+          <div className="min-w-0">
             <h3 className="text-white font-semibold mb-4 tracking-wide uppercase text-sm">Navigation</h3>
             <ul className="space-y-2.5">
               {[
@@ -81,35 +81,35 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="min-w-0">
             <h3 className="text-white font-semibold mb-4 tracking-wide uppercase text-sm">Contact Us</h3>
             <ul className="space-y-4">
               <li>
                 <a
                   href="mailto:contact@initiotechmedia.com"
-                  className="flex items-start gap-2.5 text-gray-400 hover:text-white transition-colors duration-200 group"
+                  className="flex min-w-0 items-start gap-2.5 text-gray-400 hover:text-white transition-colors duration-200 group"
                 >
                   <Mail className="h-4 w-4 mt-0.5 shrink-0 text-blue-400 group-hover:text-blue-300 transition-colors" />
-                  <span className="text-sm break-all">contact@initiotechmedia.com</span>
+                  <span className="min-w-0 break-all text-sm">contact@initiotechmedia.com</span>
                 </a>
               </li>
               <li>
                 <a
                   href="tel:+919316147661"
-                  className="flex items-center gap-2.5 text-gray-400 hover:text-white transition-colors duration-200 group"
+                  className="flex min-w-0 items-center gap-2.5 text-gray-400 hover:text-white transition-colors duration-200 group"
                 >
                   <Phone className="h-4 w-4 shrink-0 text-blue-400 group-hover:text-blue-300 transition-colors" />
-                  <span className="text-sm">(+91) 9316147661</span>
+                  <span className="min-w-0 text-sm">(+91) 9316147661</span>
                 </a>
               </li>
               <li>
-                <div className="flex items-start gap-2.5 text-gray-400">
+                <div className="flex min-w-0 items-start gap-2.5 text-gray-400">
                   <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-blue-400" />
-                  <address className="text-sm not-italic leading-relaxed">
-                    908, B Square 2, Ambli Rd,<br />
-                    near Hotel Double tree Hilton,<br />
-                    Vikram Nagar, Ahmedabad,<br />
-                    Gujarat 380054
+                  <address className="min-w-0 text-sm not-italic leading-relaxed">
+                    <span className="block">908, B Square 2, Ambli Rd,</span>
+                    <span className="block">near Hotel Double tree Hilton,</span>
+                    <span className="block">Vikram Nagar, Ahmedabad,</span>
+                    <span className="block">Gujarat 380054</span>
                   </address>
                 </div>
               </li>
@@ -121,7 +121,7 @@ const Footer = () => {
         <div className="mt-10 pt-8 text-center">
           <div className="divider-soft opacity-70" />
           <p className="text-gray-400 mt-8">
-            © 2024 AppSolutions. All rights reserved.
+            {'\u00a9'} 2024 AppSolutions. All rights reserved.
           </p>
         </div>
       </div>
