@@ -47,6 +47,26 @@ const ProductDetailPage = () => {
     }
   }, [slug]);
 
+  useEffect(() => {
+    if (!product) return;
+    const title = (product as any).name || "Product";
+    const description = (product as any).description || "";
+    const image = (product as any).image || (product as any).imageUrl || "";
+    document.title = `${title} | AppSolutions`;
+    const setMeta = (name: string, content: string, prop?: boolean) => {
+      const attr = prop ? "property" : "name";
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    setMeta("og:title", title, true);
+    if (description) setMeta("og:description", description, true);
+    setMeta("og:type", "product", true);
+    setMeta("og:url", window.location.href, true);
+    if (image) setMeta("og:image", image.startsWith("http") ? image : `${window.location.origin}${image}`, true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, [product]);
+
   if (loading) {
     return (
       <div className="pt-24 pb-20 flex items-center justify-center min-h-screen">

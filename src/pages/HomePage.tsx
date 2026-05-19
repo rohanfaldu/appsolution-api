@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -88,10 +88,28 @@ const categoryCards: Array<{ label: string; icon: LucideIcon; accent: string; de
   },
 ];
 
+const setPageMeta = (name: string, content: string, prop?: boolean) => {
+  const attr = prop ? "property" : "name";
+  let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+  if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute("content", content);
+};
+
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [platformFilter, setPlatformFilter] = useState<PlatformFilter>('all');
   const [sortFilter, setSortFilter] = useState<SortFilter>('bestseller');
+
+  useEffect(() => {
+    document.title = "AppSolutions – Premium Mobile App Templates";
+    setPageMeta("description", "Discover production-ready Flutter, Android and iOS app templates. Launch your next mobile app faster.");
+    setPageMeta("og:title", "AppSolutions – Premium Mobile App Templates", true);
+    setPageMeta("og:description", "Production-ready Flutter, Android & iOS app templates. Launch faster.", true);
+    setPageMeta("og:type", "website", true);
+    setPageMeta("og:url", window.location.href, true);
+    setPageMeta("og:image", "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200", true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, []);
 
   const filteredProducts = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();

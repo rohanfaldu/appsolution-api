@@ -61,6 +61,26 @@ const BlogDetailPage = () => {
     setRelatedPosts(mockRelatedPosts);
   }, [id]);
 
+  useEffect(() => {
+    if (!post) return;
+    const title = (post as any).title || "Blog";
+    const description = (post as any).excerpt || "";
+    const image = (post as any).image || "";
+    document.title = `${title} | AppSolutions Blog`;
+    const setMeta = (name: string, content: string, prop?: boolean) => {
+      const attr = prop ? "property" : "name";
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    setMeta("og:title", title, true);
+    if (description) setMeta("og:description", description, true);
+    setMeta("og:type", "article", true);
+    setMeta("og:url", window.location.href, true);
+    if (image) setMeta("og:image", image, true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, [post]);
+
   const handleShare = (platform) => {
     const url = window.location.href;
     const title = post?.title || '';

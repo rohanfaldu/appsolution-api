@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContactForm from '../components/ContactForm';
 
 const faqs = [
@@ -8,8 +8,26 @@ const faqs = [
   { q: 'How secure is the asset storage?', a: '' },
 ];
 
+const setPageMeta = (name: string, content: string, prop?: boolean) => {
+  const attr = prop ? "property" : "name";
+  let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+  if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute("content", content);
+};
+
 const ContactPage = () => {
   const [openIndex, setOpenIndex] = useState(1);
+
+  useEffect(() => {
+    document.title = "Contact Us – AppSolutions";
+    setPageMeta("description", "Get in touch with the AppSolutions team for support, customization requests, or partnership inquiries.");
+    setPageMeta("og:title", "Contact Us – AppSolutions", true);
+    setPageMeta("og:description", "Reach out to AppSolutions for template support, customization, or partnership inquiries.", true);
+    setPageMeta("og:type", "website", true);
+    setPageMeta("og:url", window.location.href, true);
+    setPageMeta("og:image", "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200", true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, []);
 
   return (
     <div className="pt-32 pb-24 max-w-[1440px] mx-auto px-6">

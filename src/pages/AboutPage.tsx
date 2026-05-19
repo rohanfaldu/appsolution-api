@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Reveal from '../components/Reveal';
 
 const team = [
@@ -60,7 +60,25 @@ const timeline = [
   { quarter: 'FUTURE', title: 'The Nexus', desc: 'Integrating AI-driven predictive layouts and collaborative neural design.', side: 'right' },
 ];
 
+const setPageMeta = (name: string, content: string, prop?: boolean) => {
+  const attr = prop ? "property" : "name";
+  let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+  if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute("content", content);
+};
+
 const AboutPage = () => {
+  useEffect(() => {
+    document.title = "About Us – AppSolutions";
+    setPageMeta("description", "Learn about AppSolutions – the team building premium mobile app templates for developers and startups.");
+    setPageMeta("og:title", "About Us – AppSolutions", true);
+    setPageMeta("og:description", "Meet the team behind AppSolutions and our mission to help developers launch faster.", true);
+    setPageMeta("og:type", "website", true);
+    setPageMeta("og:url", window.location.href, true);
+    setPageMeta("og:image", "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1200", true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, []);
+
   return (
     <div className="pt-32 pb-24">
       {/* Hero */}

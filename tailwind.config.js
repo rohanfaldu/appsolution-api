@@ -65,10 +65,10 @@ export default {
         full: '9999px',
       },
       fontFamily: {
-        headline: ['Epilogue', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        headline: ['Bricolage Grotesque', 'sans-serif'],
+        body: ['Plus Jakarta Sans', 'sans-serif'],
         label: ['JetBrains Mono', 'monospace'],
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'fade-up': {

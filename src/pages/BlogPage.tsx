@@ -10,6 +10,23 @@ const BlogPage = () => {
   const postsPerPage = 6;
 
   useEffect(() => {
+    document.title = "Blog – Mobile App Insights | AppSolutions";
+    const setMeta = (name: string, content: string, prop?: boolean) => {
+      const attr = prop ? "property" : "name";
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    setMeta("description", "Read the latest articles on mobile app development, Flutter, Android, iOS and marketplace insights.");
+    setMeta("og:title", "Blog – Mobile App Insights | AppSolutions", true);
+    setMeta("og:description", "Mobile app development articles, Flutter tips, and marketplace insights.", true);
+    setMeta("og:type", "website", true);
+    setMeta("og:url", window.location.href, true);
+    setMeta("og:image", "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200", true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, []);
+
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await blogAPI.getAll();

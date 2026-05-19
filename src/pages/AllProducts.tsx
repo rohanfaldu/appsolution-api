@@ -60,6 +60,23 @@ const AllProducts = () => {
   const productsPerPage = 9;
 
   useEffect(() => {
+    document.title = "Browse App Templates – Flutter, Android & iOS | AppSolutions";
+    const setMeta = (name: string, content: string, prop?: boolean) => {
+      const attr = prop ? "property" : "name";
+      let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);
+      if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+      el.setAttribute("content", content);
+    };
+    setMeta("description", "Browse premium Flutter, Android and iOS app templates. Filter by category, price and platform.");
+    setMeta("og:title", "Browse App Templates – Flutter, Android & iOS | AppSolutions", true);
+    setMeta("og:description", "Premium Flutter, Android and iOS app templates. Find your perfect starting point.", true);
+    setMeta("og:type", "website", true);
+    setMeta("og:url", window.location.href, true);
+    setMeta("og:image", "https://images.pexels.com/photos/607812/pexels-photo-607812.jpeg?auto=compress&cs=tinysrgb&w=1200", true);
+    return () => { document.title = "AppSolutions | Premium Digital Marketplace"; };
+  }, []);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await productsAPI.getAll();
