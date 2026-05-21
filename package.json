@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node init && vite",
     "server": "node server/app.js",
-    "dev:server": "nodemon server/app.js",
+    "dev:server": "node init && nodemon server/app.js",
     "db:seed": "node prisma/seed.js",
     "db:generate": "npx prisma generate",
     "db:push": "npx prisma db push",
     "db:migrate": "npx prisma migrate dev",
     "db:studio": "npx prisma studio",
-    "build": "vite build",
+    "build": "node init && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
