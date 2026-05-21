@@ -69,6 +69,11 @@ export default {
         body: ['Plus Jakarta Sans', 'sans-serif'],
         label: ['JetBrains Mono', 'monospace'],
         sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        bricolage: ['Bricolage Grotesque', 'sans-serif'],
+        'bricolage-grotesque': ['Bricolage Grotesque', 'sans-serif'],
+        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+        'plus-jakarta': ['Plus Jakarta Sans', 'sans-serif'],
+        'plus-jakarta-sans': ['Plus Jakarta Sans', 'sans-serif'],
       },
       keyframes: {
         'fade-up': {
